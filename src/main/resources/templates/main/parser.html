@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Parser</title>
+    <link rel="stylesheet" th:href="@{../css/styles.css}">
+    <link rel="icon" type="image/x-icon" th:href="@{/favicon.png}">
+</head>
+<body>
+<div th:insert="~{fragments/navbar :: navbar}"></div>
+<div class="container">
+    <h1>Web Page Parser</h1>
+    <form th:action="@{/parse}" method="get">
+        <div class="form-group">
+            <label for="url">URL to parse:</label>
+            <input type="text" id="url" name="url" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="url">Css selector:</label>
+            <input type="text" id="cssSelector" name="cssSelector" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="filePath">File path to save Excel:</label>
+            <input type="text" id="filePath" name="filePath" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Parse and Save</button>
+    </form>
+    <div th:if="${message}">
+        <p th:text="${message}"></p>
+    </div>
+</div>
+</body>
+</html>

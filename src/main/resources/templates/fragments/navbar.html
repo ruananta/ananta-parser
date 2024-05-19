@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Navbar</title>
+</head>
+<body>
+<div th:fragment="navbar">
+    <nav>
+        <div class="navbar">
+            <div class="nav-buttons">
+                <!-- Если пользователь не аутентифицирован -->
+                <a th:if="${username == null}" class="nav-button" th:href="@{/login}">Вход</a>
+                <a th:if="${username == null}" class="nav-button" th:href="@{/register}">Регистрация</a>
+                <!-- Если пользователь аутентифицирован -->
+                <span th:if="${username != null}">Здравствуйте, <span th:text="${username}"></span>!</span>
+                <a th:if="${username != null}" class="nav-button" th:href="@{/logout}">Выход</a>
+            </div>
+        </div>
+    </nav>
+</div>
+</body>
+</html>
