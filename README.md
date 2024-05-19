@@ -2,7 +2,7 @@
 # Ananta Parser
 
 Данный софт предназначен для загрузки данных с веб сайтов. Запуск загрузки возможен как в ручном так и в автоматическом режиме по рассписанию.
-## Стек
+## Technology Stack
 - **Spring Boot**
     - Parent: `spring-boot-starter-parent` (version 3.2.5)
 - **Spring Framework**
