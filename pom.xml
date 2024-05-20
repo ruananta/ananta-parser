@@ -97,6 +97,13 @@
             <artifactId>jakarta.validation-api</artifactId>
             <version>3.1.0-M2</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <version>6.2.4</version>
+            <scope>test</scope>
+        </dependency>
 <!--        &lt;!&ndash; https://mvnrepository.com/artifact/org.projectlombok/lombok &ndash;&gt;-->
 <!--        <dependency>-->
 <!--            <groupId>org.projectlombok</groupId>-->
