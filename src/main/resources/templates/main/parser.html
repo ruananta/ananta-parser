@@ -8,6 +8,7 @@
 </head>
 <body>
 <div th:insert="~{fragments/navbar :: navbar}"></div>
+<button class="addTaskButton" th:text="#{button.addTask}">Добавить задачу</button>
 <div class="container">
     <h1>Web Page Parser</h1>
     <form th:action="@{/parse}" method="get">
@@ -29,5 +30,12 @@
         <p th:text="${message}"></p>
     </div>
 </div>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var navbarHeight = document.querySelector('.navbar').offsetHeight;
+        var addTaskButton = document.querySelector('.addTaskButton');
+        addTaskButton.style.top = (navbarHeight + 40) + 'px';
+    });
+</script>
 </body>
 </html>

@@ -152,3 +152,27 @@ button.btn-primary {
 button.btn-primary:hover {
     background-color: #218838;
 }
+
+.addTaskButton {
+    position: fixed;
+    top: calc(100% - 40px);
+    right: 40px;
+    z-index: 10;
+    background-color: #28a745;
+    border: none;
+    border-radius: 5px;
+    padding: 15px 20px;
+    color: white;
+    text-transform: uppercase;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.addTaskButton:hover {
+    background-color: #218838;
+}
+.addTaskButton:active {
+    background-color: #0056b3;
+    color: #ffffff;
+}
+
