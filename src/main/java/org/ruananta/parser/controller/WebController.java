@@ -6,6 +6,7 @@ import org.ruananta.parser.config.UserService;
 import org.ruananta.parser.entity.User;
 import org.ruananta.parser.entity.UserFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Locale;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
@@ -26,6 +28,9 @@ public class WebController {
     public void setUserService(UserService userService) {
         this.userService = userService;
     }
+
+    @Autowired
+    private MessageSource messageSource;
 
     @GetMapping("/")
     public String index(@AuthenticationPrincipal UserDetails currentUser, Model model) {
@@ -65,18 +70,18 @@ public class WebController {
                                @RequestParam @Email String email,
                                @RequestParam String password,
                                @RequestParam String confirmPassword,
-                               HttpSession session) {
+                               HttpSession session, Locale locale) {
         if (!password.equals(confirmPassword)) {
             session.setAttribute("username", username);
             session.setAttribute("email", email);
-            session.setAttribute("error", "Пароли не совпадают");
+            session.setAttribute("error", messageSource.getMessage("error.passwordsNotMatching", null, locale));
             return "redirect:/register";
         }
 
         if (!isValidEmail(email)) {
             session.setAttribute("username", username);
             session.setAttribute("email", email);
-            session.setAttribute("error", "Не верный email адрес");
+            session.setAttribute("error", messageSource.getMessage("error.invalidEmail", null, locale));
             return "redirect:/register";
         }
 
@@ -86,14 +91,14 @@ public class WebController {
         if (optionalUser.isPresent()) {
             session.setAttribute("username", username);
             session.setAttribute("email", email);
-            session.setAttribute("error", "Данное имя пользователя занято");
+            session.setAttribute("error", messageSource.getMessage("error.usernameTaken", null, locale));
             return "redirect:/register";
         }
         optionalUser = this.userService.findByEmail(user.getEmail());
         if (optionalUser.isPresent()) {
             session.setAttribute("username", username);
             session.setAttribute("email", email);
-            session.setAttribute("error", "Данный email уже используется");
+            session.setAttribute("error", messageSource.getMessage("error.emailInUse", null, locale));
             return "redirect:/register";
         }
         this.userService.save(user);
