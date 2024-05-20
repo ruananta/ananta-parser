@@ -36,11 +36,6 @@ body {
     transition: background-color 0.3s ease;
 }
 
-.navbar a:hover, .nav-button:hover {
-    background-color: #ddd;
-    color: black;
-}
-
 .nav-button {
     background-color: #28a745;
     border: none;
@@ -49,10 +44,6 @@ body {
     color: white;
     text-transform: uppercase;
     font-weight: bold;
-}
-
-.nav-button:hover {
-    background-color: #218838;
 }
 
 .navbar span{
@@ -168,10 +159,10 @@ button.btn-primary:hover {
     cursor: pointer;
 }
 
-.addTaskButton:hover {
+.addTaskButton:hover, .nav-button:hover{
     background-color: #218838;
 }
-.addTaskButton:active {
+.addTaskButton:active,.navbar a:active, .nav-button:active, .nav-button:active, button.btn-primary:active{
     background-color: #0056b3;
     color: #ffffff;
 }
