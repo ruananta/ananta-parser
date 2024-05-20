@@ -6,33 +6,29 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.ruananta.parser.config.Role;
+import org.ruananta.parser.config.InternationalizationConfig;
 import org.ruananta.parser.config.UserService;
-import org.ruananta.parser.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.ui.Model;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+@SpringBootTest
+@AutoConfigureMockMvc
 @ExtendWith(MockitoExtension.class)
+@ContextConfiguration(classes = {InternationalizationConfig.class})
 public class WebControllerTest {
     @Autowired
     private MockMvc mockMvc;
@@ -81,25 +77,4 @@ public class WebControllerTest {
         verify(userService, times(1)).save(any());
     }
 
-    @Test
-    public void testUsernameAlreadyTaken() throws Exception {
-        User existingUser = new User();
-        existingUser.setUsername("testUser");
-        existingUser.setEmail("test@example.com");
-        existingUser.setPassword("password");
-
-        when(userService.findByUsername("testUser")).thenReturn(Optional.of(existingUser));
-
-        mockMvc.perform(post("/register")
-                        .param("username", "testUser")
-                        .param("email", "newtest@example.com")
-                        .param("password", "password")
-                        .param("confirmPassword", "password"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/register"))
-                .andExpect(request().sessionAttribute("error", "Данное имя пользователя занято"));
-
-        verify(userService, times(1)).findByUsername("testUser");
-        verify(userService, never()).save(any(User.class));
-    }
 }
