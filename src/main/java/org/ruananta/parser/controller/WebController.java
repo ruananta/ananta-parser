@@ -64,6 +64,11 @@ public class WebController {
     public String admin() {
         return "main/admin";
     }
+    @GetMapping("/main/addTask")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public String addTask() {
+        return "main/addTask";
+    }
 
     @PostMapping("/register")
     public String registerUser(@RequestParam String username,

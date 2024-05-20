@@ -2,13 +2,13 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Parser</title>
+    <title th:text="#{page.parser.title}">Parser</title>
     <link rel="stylesheet" th:href="@{../css/styles.css}">
     <link rel="icon" type="image/x-icon" th:href="@{/favicon.png}">
 </head>
 <body>
 <div th:insert="~{fragments/navbar :: navbar}"></div>
-<button class="addTaskButton" th:text="#{button.addTask}">Добавить задачу</button>
+<button class="addTaskButton" th:text="#{button.addTask}" th:href="@{/addTask}">Добавить задачу</button>
 <div class="container">
     <h1>Web Page Parser</h1>
     <form th:action="@{/parse}" method="get">

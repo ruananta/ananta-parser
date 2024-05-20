@@ -1,5 +1,4 @@
 
-
 body {
     font-family: Arial, sans-serif;
     background-color: #f8f8f8;
@@ -46,10 +45,11 @@ body {
     font-weight: bold;
 }
 
-.navbar span{
+.navbar span {
     color: white;
 }
-.navbar span span{
+
+.navbar span span {
     color: green;
     font-weight: bold;
 }
@@ -60,7 +60,7 @@ body {
     padding: 20px;
     border: 1px solid #ccc;
     border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     background: #f9f9f9;
     text-align: center;
 }
@@ -159,10 +159,11 @@ button.btn-primary:hover {
     cursor: pointer;
 }
 
-.addTaskButton:hover, .nav-button:hover{
+.addTaskButton:hover, .nav-button:hover {
     background-color: #218838;
 }
-.addTaskButton:active,.navbar a:active, .nav-button:active, .nav-button:active, button.btn-primary:active{
+
+.addTaskButton:active, .navbar a:active, .nav-button:active, .nav-button:active, button.btn-primary:active {
     background-color: #0056b3;
     color: #ffffff;
 }
