@@ -66,7 +66,9 @@ public class WebController {
     }
     @GetMapping("/main/addTask")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public String addTask() {
+    public String addTask(@AuthenticationPrincipal UserDetails currentUser, Model model) {
+        String username = currentUser.getUsername();
+        model.addAttribute("username", username);
         return "main/addTask";
     }
 

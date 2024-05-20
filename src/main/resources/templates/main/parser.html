@@ -8,7 +8,7 @@
 </head>
 <body>
 <div th:insert="~{fragments/navbar :: navbar}"></div>
-<button class="addTaskButton" th:text="#{button.addTask}" th:href="@{/addTask}">Добавить задачу</button>
+<a class="addTaskButton" th:text="#{button.addTask}" th:href="@{/main/addTask}">Добавить задачу</a>
 <div class="container">
     <h1>Web Page Parser</h1>
     <form th:action="@{/parse}" method="get">

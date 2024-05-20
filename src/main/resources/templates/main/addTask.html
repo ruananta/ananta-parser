@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <title th:text="#{page.addTask.title}">Добавить задачу</title>
@@ -7,6 +8,6 @@
     <link rel="icon" type="image/x-icon" th:href="@{/favicon.png}">
 </head>
 <body>
-
+<div th:insert="~{fragments/navbar :: navbar}"></div>
 </body>
 </html>
