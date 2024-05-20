@@ -10,11 +10,11 @@
         <div class="navbar">
             <div class="nav-buttons">
                 <!-- Если пользователь не аутентифицирован -->
-                <a th:if="${username == null}" class="nav-button" th:href="@{/login}">Вход</a>
-                <a th:if="${username == null}" class="nav-button" th:href="@{/register}">Регистрация</a>
+                <a th:if="${username == null}" class="nav-button" th:href="@{/login}" th:text="#{button.login}">Вход</a>
+                <a th:if="${username == null}" class="nav-button" th:href="@{/register}" th:text="#{button.register}">Регистрация</a>
                 <!-- Если пользователь аутентифицирован -->
-                <span th:if="${username != null}">Здравствуйте, <span th:text="${username}"></span>!</span>
-                <a th:if="${username != null}" class="nav-button" th:href="@{/logout}">Выход</a>
+                <span th:if="${username != null}" th:text="#{page.navbar.hello(${username})}">Здравствуйте, {username}!</span>
+                <a th:if="${username != null}" class="nav-button" th:href="@{/logout}" th:text="#{button.logout}">Выход</a>
             </div>
         </div>
     </nav>

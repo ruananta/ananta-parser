@@ -2,15 +2,15 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Error</title>
+    <title th:text="#{page.error.title}">Error</title>
     <link rel="stylesheet" th:href="@{/css/styles.css}">
     <link rel="icon" type="image/x-icon" th:href="@{/favicon.png}">
 </head>
 <body>
 <div class="container">
-    <h1>Ошибка</h1>
-    <p>Произошла неожиданная ошибка.</p>
-    <a href="/" class="button">На главную</a>
+    <h1 th:text="#{page.error.heading}">Ошибка</h1>
+    <p th:text="#{page.error.text}"> Произошла неожиданная ошибка.</p>
+    <a href="/" class="button" th:text="#{button.home}">На главную</a>
 </div>
 </body>
 </html>
