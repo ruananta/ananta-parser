@@ -44,14 +44,14 @@ public class Task {
         this.description = description;
     }
 
-    public void addLinks(String links, String tags) {
+    public void parseAndAddLinks(String links, String tags) {
         String[] lines = links.split("\n");
         String[] tagLines = tags.split("\n");
 
         for (String line : lines) {
             Link link = new Link();
             link.setUrl(line);
-            link.addPathProperties(tagLines);
+            link.parseAndAddPathProperties(tagLines);
             link.setTask(this);
             this.links.add(link);
         }
@@ -103,12 +103,12 @@ public class Task {
             return task;
         }
 
-        public void addPathProperties(String[] pathProperties){
+        public void parseAndAddPathProperties(String[] pathProperties){
             for(String s : pathProperties){
-                addPathProperties(s);
+                parseAndAddPathProperties(s);
             }
         }
-        public void addPathProperties(String pathProperties){
+        public void parseAndAddPathProperties(String pathProperties){
             SavePathProperties savePathProperties = new SavePathProperties();
             savePathProperties.setLink(this);
             this.pathProperties.add(savePathProperties);

@@ -97,7 +97,7 @@ public class WebController {
         Task task = new Task();
         task.setName(taskName);
         task.setDescription(description);
-        task.addLinks(links, tags);
+        task.parseAndAddLinks(links, tags);
         this.taskRepository.save(task);
         return "redirect:/main/parser";
     }
