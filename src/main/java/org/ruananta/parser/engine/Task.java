@@ -2,7 +2,6 @@ package org.ruananta.parser.engine;
 
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,6 +10,8 @@ public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    private String name;
+    private String description;
 
     @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Link> links = new HashSet<>();
@@ -25,6 +26,35 @@ public class Task {
 
     public void setLinks(Set<Link> links) {
         this.links = links;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void addLinks(String links, String tags) {
+        String[] lines = links.split("\n");
+        String[] tagLines = tags.split("\n");
+
+        for (String line : lines) {
+            Link link = new Link();
+            link.setUrl(line);
+            link.addPathProperties(tagLines);
+            link.setTask(this);
+            this.links.add(link);
+        }
     }
 
     @Entity
@@ -64,6 +94,32 @@ public class Task {
         public void setPathProperties(Set<SavePathProperties> pathProperties) {
             this.pathProperties = pathProperties;
         }
+
+        public void setTask(Task task) {
+            this.task = task;
+        }
+
+        public Task getTask() {
+            return task;
+        }
+
+        public void addPathProperties(String[] pathProperties){
+            for(String s : pathProperties){
+                addPathProperties(s);
+            }
+        }
+        public void addPathProperties(String pathProperties){
+            SavePathProperties savePathProperties = new SavePathProperties();
+            savePathProperties.setLink(this);
+            this.pathProperties.add(savePathProperties);
+            if(pathProperties.contains("->")){
+                String[] strings = pathProperties.split("\\-\\>");
+                savePathProperties.setPath(strings[0]);
+                savePathProperties.setPath(strings[1]);
+            }else{
+                savePathProperties.setTag(pathProperties);
+            }
+        }
     }
 
     @Entity
@@ -77,6 +133,14 @@ public class Task {
 
         @ManyToOne
         private Link link;
+
+        public Link getLink() {
+            return link;
+        }
+
+        public void setLink(Link link) {
+            this.link = link;
+        }
 
         public Long getId() {
             return id;
