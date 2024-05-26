@@ -70,7 +70,7 @@ public class WebController {
         return "register";
     }
 
-    @GetMapping("/main/parser")
+    @GetMapping("main/parser")
     public String parser(@AuthenticationPrincipal UserDetails currentUser, Model model) {
         String username = currentUser.getUsername();
         model.addAttribute("username", username);
@@ -79,13 +79,13 @@ public class WebController {
         return "main/parser";
     }
 
-    @GetMapping("/main/admin")
+    @GetMapping("main/admin")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public String admin() {
         return "main/admin";
     }
 
-    @GetMapping("/main/task-add")
+    @GetMapping("main/task-add")
     public String addTask(@AuthenticationPrincipal UserDetails currentUser, Model model) {
         if(!model.containsAttribute("username")) {
             String username = currentUser.getUsername();
@@ -110,7 +110,7 @@ public class WebController {
         return "redirect:/main/parser";
     }
 
-    @GetMapping("/task-details/{taskId}")
+    @GetMapping("main/task-details/{taskId}")
     public String details(Model model, @AuthenticationPrincipal UserDetails currentUser, @PathVariable Long taskId) {
         if(!model.containsAttribute("username")) {
             String username = currentUser.getUsername();

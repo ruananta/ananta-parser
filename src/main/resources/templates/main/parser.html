@@ -56,7 +56,7 @@
     document.querySelectorAll('#taskTable tr').forEach(row => {
         row.addEventListener('click', () => {
             const taskId = row.getAttribute('data-task-id'); // Получение ID задачи
-            window.location.href = '/task-details/' + taskId; // Переход на другую страницу
+            window.location.href = '/main/task-details/' + taskId; // Переход на другую страницу
         });
     });
 </script>
