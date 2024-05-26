@@ -12,6 +12,7 @@ public class Task {
     private Long id;
     private String name;
     private String description;
+    private TaskStatus status;
 
     @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Link> links = new HashSet<>();
@@ -42,6 +43,14 @@ public class Task {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public TaskStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(TaskStatus taskStatus) {
+        this.status = taskStatus;
     }
 
     public void parseAndAddLinks(String links, String tags) {

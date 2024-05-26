@@ -6,6 +6,7 @@ import org.ruananta.parser.config.UserService;
 import org.ruananta.parser.engine.Task;
 import org.ruananta.parser.engine.TaskRepository;
 import org.ruananta.parser.engine.TaskService;
+import org.ruananta.parser.engine.TaskStatus;
 import org.ruananta.parser.entity.User;
 import org.ruananta.parser.entity.UserFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +17,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.regex.Pattern;
@@ -71,6 +74,8 @@ public class WebController {
     public String parser(@AuthenticationPrincipal UserDetails currentUser, Model model) {
         String username = currentUser.getUsername();
         model.addAttribute("username", username);
+        List<Task> tasks = taskRepository.findAll();
+        model.addAttribute("tasks", tasks);
         return "main/parser";
     }
 
@@ -82,24 +87,41 @@ public class WebController {
 
     @GetMapping("/main/task-add")
     public String addTask(@AuthenticationPrincipal UserDetails currentUser, Model model) {
-        String username = currentUser.getUsername();
-        model.addAttribute("username", username);
+        if(!model.containsAttribute("username")) {
+            String username = currentUser.getUsername();
+            model.addAttribute("username", username);
+        }
         return "main/task-add";
     }
 
     @PostMapping("main/task-add")
     public String addTask(Model model, @AuthenticationPrincipal UserDetails currentUser, @RequestParam String taskName, @RequestParam String description,
                           @RequestParam String links, @RequestParam String tags) {
-        String username = currentUser.getUsername();
         if(!model.containsAttribute("username")) {
+            String username = currentUser.getUsername();
             model.addAttribute("username", username);
         }
         Task task = new Task();
         task.setName(taskName);
         task.setDescription(description);
+        task.setStatus(TaskStatus.STOPPED);
         task.parseAndAddLinks(links, tags);
         this.taskRepository.save(task);
         return "redirect:/main/parser";
+    }
+
+    @GetMapping("/task-details/{taskId}")
+    public String details(Model model, @AuthenticationPrincipal UserDetails currentUser, @PathVariable Long taskId) {
+        if(!model.containsAttribute("username")) {
+            String username = currentUser.getUsername();
+            model.addAttribute("username", username);
+        }
+        Task task = this.taskRepository.getTaskById(taskId);
+        if(task == null) {
+            return "404";
+        }
+        model.addAttribute("task", task);
+        return "main/task-details";
     }
 
     @PostMapping("/register")
