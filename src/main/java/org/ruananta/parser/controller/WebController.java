@@ -4,7 +4,8 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.constraints.Email;
 import org.ruananta.parser.config.UserService;
 import org.ruananta.parser.engine.Task;
-import org.ruananta.parser.engine.TaskRepository;
+import org.ruananta.parser.repository.LinkRepository;
+import org.ruananta.parser.repository.TaskRepository;
 import org.ruananta.parser.engine.TaskService;
 import org.ruananta.parser.engine.TaskStatus;
 import org.ruananta.parser.entity.User;
@@ -32,7 +33,7 @@ public class WebController {
     private UserService userService;
     private TaskService taskService;
     private TaskRepository taskRepository;
-
+    private LinkRepository linkRepository;
     @Autowired
     public void setMessageSource(MessageSource messageSource) {
         this.messageSource = messageSource;
@@ -48,6 +49,10 @@ public class WebController {
     @Autowired
     public void setTaskRepository(TaskRepository taskRepository) {
         this.taskRepository = taskRepository;
+    }
+    @Autowired
+    public void setLinkRepository(LinkRepository linkRepository) {
+        this.linkRepository = linkRepository;
     }
 
     @GetMapping("/")
@@ -116,13 +121,14 @@ public class WebController {
             String username = currentUser.getUsername();
             model.addAttribute("username", username);
         }
-        Task task = this.taskRepository.getTaskById(taskId);
+        Task task = this.taskRepository.findTaskById(taskId);
         if(task == null) {
             return "404";
         }
         model.addAttribute("task", task);
         return "main/task-details";
     }
+
 
     @PostMapping("/register")
     public String registerUser(@RequestParam String username,

@@ -53,14 +53,14 @@ public class Task {
         this.status = taskStatus;
     }
 
-    public void parseAndAddLinks(String links, String tags) {
+    public void parseAndAddLinks(String links, String stringSelectors) {
         String[] lines = links.split("\n");
-        String[] tagLines = tags.split("\n");
+        String[] selectors = stringSelectors.split("\n");
 
         for (String line : lines) {
             Link link = new Link();
             link.setUrl(line);
-            link.parseAndAddPathProperties(tagLines);
+            link.parseAndAddSelectors(selectors);
             link.setTask(this);
             this.links.add(link);
         }
@@ -74,7 +74,7 @@ public class Task {
         private String url;
 
         @OneToMany(mappedBy = "link", cascade = CascadeType.ALL, orphanRemoval = true)
-        private Set<SavePathProperties> pathProperties = new HashSet<>();
+        private Set<Selector> selectors = new HashSet<>();
 
         @ManyToOne
         @JoinColumn
@@ -96,12 +96,12 @@ public class Task {
             this.url = url;
         }
 
-        public Set<SavePathProperties> getPathProperties() {
-            return pathProperties;
+        public Set<Selector> getSelectors() {
+            return selectors;
         }
 
-        public void setPathProperties(Set<SavePathProperties> pathProperties) {
-            this.pathProperties = pathProperties;
+        public void setSelectors(Set<Selector> pathProperties) {
+            this.selectors = pathProperties;
         }
 
         public void setTask(Task task) {
@@ -112,36 +112,44 @@ public class Task {
             return task;
         }
 
-        public void parseAndAddPathProperties(String[] pathProperties){
+        public void parseAndAddSelectors(String[] pathProperties){
             for(String s : pathProperties){
-                parseAndAddPathProperties(s);
+                parseAndAddSelectors(s);
             }
         }
-        public void parseAndAddPathProperties(String pathProperties){
-            SavePathProperties savePathProperties = new SavePathProperties();
-            savePathProperties.setLink(this);
-            this.pathProperties.add(savePathProperties);
-            if(pathProperties.contains("->")){
-                String[] strings = pathProperties.split("\\-\\>");
-                savePathProperties.setPath(strings[0]);
-                savePathProperties.setPath(strings[1]);
+        public void parseAndAddSelectors(String stringSelector){
+            Selector selector = new Selector();
+            selector.setLink(this);
+            this.selectors.add(selector);
+            if(stringSelector.contains("->")){
+                String[] strings = stringSelector.split("\\-\\>");
+                selector.setSelector(strings[0]);
+                selector.setSelector(strings[1]);
             }else{
-                savePathProperties.setTag(pathProperties);
+                selector.setSelector(stringSelector);
             }
         }
     }
 
     @Entity
-    public static class SavePathProperties {
+    public static class Selector {
         @Id
         @GeneratedValue(strategy = GenerationType.AUTO)
         private Long id;
-        private String tag;
-        private String path;
-        private Result results;
+        private String name;
+        private String selector;
+        private Result result;
 
         @ManyToOne
         private Link link;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
 
         public Link getLink() {
             return link;
@@ -159,28 +167,20 @@ public class Task {
             this.id = id;
         }
 
-        public String getTag() {
-            return tag;
+        public String getSelector() {
+            return selector;
         }
 
-        public void setTag(String tag) {
-            this.tag = tag;
+        public void setSelector(String path) {
+            this.selector = path;
         }
 
-        public String getPath() {
-            return path;
+        public Result getResult() {
+            return result;
         }
 
-        public void setPath(String path) {
-            this.path = path;
-        }
-
-        public Result getResults() {
-            return results;
-        }
-
-        public void setResults(Result results) {
-            this.results = results;
+        public void setResult(Result results) {
+            this.result = results;
         }
     }
 

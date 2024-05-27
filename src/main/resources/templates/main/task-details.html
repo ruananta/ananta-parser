@@ -16,8 +16,8 @@
         <li th:each="link : ${task.links}">
             <a th:href="${link.url}" th:text="${link.url}"></a>
             <ul>
-                <li th:each="pathProperty : ${link.pathProperties}">
-                    <span th:text="${pathProperty.tag}"></span> -> <span th:text="${pathProperty.path}"></span>
+                <li th:each="pathProperty : ${link.selectors}">
+                    <span th:text="${pathProperty.selector}"></span> -> <span th:text="${pathProperty.selector}"></span>
                 </li>
             </ul>
         </li>
