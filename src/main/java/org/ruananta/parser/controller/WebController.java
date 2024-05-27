@@ -129,6 +129,19 @@ public class WebController {
         return "main/task-details";
     }
 
+    @GetMapping("main/task-details-link/{linkId}")
+    public String linkDetails(Model model, @AuthenticationPrincipal UserDetails currentUser, @PathVariable Long linkId) {
+        if(!model.containsAttribute("username")) {
+            String username = currentUser.getUsername();
+            model.addAttribute("username", username);
+        }
+        Task.Link link = this.linkRepository.findLinkById(linkId);
+        if(link == null) {
+            return "404";
+        }
+        model.addAttribute("link", link);
+        return "main/task-details-link";
+    }
 
     @PostMapping("/register")
     public String registerUser(@RequestParam String username,

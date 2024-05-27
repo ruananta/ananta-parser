@@ -13,13 +13,11 @@
     <h2>Список задач</h2>
     <table id="taskTable">
         <tr>
-<!--            <th>ID</th>-->
             <th>Название</th>
             <th>Описание</th>
             <th>Статус</th>
         </tr>
         <tr th:each="task : ${tasks}" th:attr="data-task-id=${task.id}">
-<!--            <td th:text="${task.id}"></td>-->
             <td th:text="${task.name}"></td>
             <td th:text="${task.description}"></td>
             <td th:text="${task.status}"></td>

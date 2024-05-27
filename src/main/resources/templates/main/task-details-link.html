@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="#{page.parser.title}">Parser</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="icon" type="image/x-icon" th:href="@{/favicon.png}">
+</head>
+<body>
+<div th:insert="~{fragments/navbar :: navbar}"></div>
+<div class="taskDetails">
+    <h3 th:text="#{page.task.details.linkName} + ' ' + ${link.name}"></h3>
+    <p th:text="#{page.task.details.linkDescription} + ' ' + ${link.description}"></p>
+    <h4 th:text="#{page.task.details.linkSelectors}"></h4>
+    <ul>
+        <li th:each="selector : ${link.selectors}">
+            <span th:text="${selector.name}"></span>: <span th:text="${selector.selector}"></span>
+        </li>
+    </ul>
+</div>
+</body>
+</html>

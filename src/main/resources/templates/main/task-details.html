@@ -12,16 +12,27 @@
     <h3 th:text="#{page.task.details.taskName} + ' ' + ${task.name}"></h3>
     <p th:text="#{page.task.details.taskDescription} + ' ' + ${task.description}"></p>
     <h4 th:text="#{page.task.details.linkTitle}"></h4>
-    <ul>
-        <li th:each="link : ${task.links}">
-            <a th:href="${link.url}" th:text="${link.url}"></a>
-            <ul>
-                <li th:each="pathProperty : ${link.selectors}">
-                    <span th:text="${pathProperty.selector}"></span> -> <span th:text="${pathProperty.selector}"></span>
-                </li>
-            </ul>
-        </li>
-    </ul>
+    <table id="taskTable">
+        <tr>
+            <th>Название</th>
+            <th>Описание</th>
+            <th>Ссылка</th>
+        </tr>
+        <tr th:each="link : ${task.links}" th:attr="data-link-id=${link.id}">
+            <td th:text="${link.name}"></td>
+            <td th:text="${link.description}"></td>
+            <td th:text="${link.url}"></td>
+        </tr>
+    </table>
 </div>
+<script>
+    // Обработчик события для строк таблицы
+    document.querySelectorAll('#taskTable tr').forEach(row => {
+        row.addEventListener('click', () => {
+            const linkId = row.getAttribute('data-link-id'); // Получение ID задачи
+            window.location.href = '/main/task-details-link/' + linkId; // Переход на другую страницу
+        });
+    });
+</script>
 </body>
 </html>
