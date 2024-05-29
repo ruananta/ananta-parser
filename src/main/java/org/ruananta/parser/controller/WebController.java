@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Email;
 import org.ruananta.parser.config.UserService;
 import org.ruananta.parser.engine.Task;
 import org.ruananta.parser.repository.LinkRepository;
+import org.ruananta.parser.repository.SelectorRepository;
 import org.ruananta.parser.repository.TaskRepository;
 import org.ruananta.parser.engine.TaskService;
 import org.ruananta.parser.engine.TaskStatus;
@@ -17,10 +18,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Locale;
@@ -34,6 +32,7 @@ public class WebController {
     private TaskService taskService;
     private TaskRepository taskRepository;
     private LinkRepository linkRepository;
+    private SelectorRepository selectorRepository;
     @Autowired
     public void setMessageSource(MessageSource messageSource) {
         this.messageSource = messageSource;
@@ -54,6 +53,11 @@ public class WebController {
     public void setLinkRepository(LinkRepository linkRepository) {
         this.linkRepository = linkRepository;
     }
+    @Autowired
+    public void setSelectorRepository(SelectorRepository selectorRepository) {
+        this.selectorRepository = selectorRepository;
+    }
+
 
     @GetMapping("/")
     public String index(@AuthenticationPrincipal UserDetails currentUser, Model model) {
@@ -75,7 +79,7 @@ public class WebController {
         return "register";
     }
 
-    @GetMapping("main/parser")
+    @GetMapping("main")
     public String parser(@AuthenticationPrincipal UserDetails currentUser, Model model) {
         String username = currentUser.getUsername();
         model.addAttribute("username", username);
@@ -90,7 +94,7 @@ public class WebController {
         return "main/admin";
     }
 
-    @GetMapping("main/task-add")
+    @GetMapping("main/task/add")
     public String addTask(@AuthenticationPrincipal UserDetails currentUser, Model model) {
         if(!model.containsAttribute("username")) {
             String username = currentUser.getUsername();
@@ -99,7 +103,7 @@ public class WebController {
         return "main/task-add";
     }
 
-    @PostMapping("main/task-add")
+    @PostMapping("main/task/add")
     public String addTask(Model model, @AuthenticationPrincipal UserDetails currentUser, @RequestParam String taskName, @RequestParam String description,
                           @RequestParam String links, @RequestParam String tags) {
         if(!model.containsAttribute("username")) {
@@ -112,10 +116,10 @@ public class WebController {
         task.setStatus(TaskStatus.STOPPED);
         task.parseAndAddLinks(links, tags);
         this.taskRepository.save(task);
-        return "redirect:/main/parser";
+        return "redirect:/main";
     }
 
-    @GetMapping("main/task-details/{taskId}")
+    @GetMapping("main/task/{taskId}")
     public String details(Model model, @AuthenticationPrincipal UserDetails currentUser, @PathVariable Long taskId) {
         if(!model.containsAttribute("username")) {
             String username = currentUser.getUsername();
@@ -140,6 +144,43 @@ public class WebController {
             return "404";
         }
         model.addAttribute("link", link);
+        return "main/task-details-link";
+    }
+
+//    @PostMapping("main/task-details-link/selector-add")
+//    public String addSelector(@RequestParam Long linkId, @RequestParam String name, @RequestParam String stringSelector,
+//                              @AuthenticationPrincipal UserDetails currentUser, Model model) {
+        @PostMapping("main/task-details-link/{linkId}/selector-add")
+        public String addSelector(@ModelAttribute Task.Selector selector, @PathVariable Long linkId,
+                              @AuthenticationPrincipal UserDetails currentUser, Model model) {
+        Task.Link link = this.linkRepository.findLinkById(linkId);
+//        Task.Selector selector = new Task.Selector();
+//        selector.setName(name);
+//        selector.setSelector(stringSelector);
+        selector.setLink(link);
+        link.getSelectors().add(selector);
+        this.linkRepository.save(link);
+
+        model.addAttribute("link", link);
+
+        if(!model.containsAttribute("username")) {
+            String username = currentUser.getUsername();
+            model.addAttribute("username", username);
+        }
+        model.addAttribute("successMessage", "Успешно добавлено");
+        return "main/task-details-link";
+    }
+    @PostMapping("main/task-details-link/selector-delete")
+    public String deleteSelector(@RequestParam Long linkId, @RequestParam Long selectorId,
+                                 @AuthenticationPrincipal UserDetails currentUser, Model model){
+        Task.Link link = this.linkRepository.findLinkById(linkId);
+        Task.Selector selector = this.selectorRepository.findSelectorById(selectorId);
+        if(link != null && selector != null) {
+            link.getSelectors().remove(selector);
+            this.linkRepository.save(link);
+        }
+        model.addAttribute("link", link);
+        model.addAttribute("successMessage", "Успешно удалено");
         return "main/task-details-link";
     }
 

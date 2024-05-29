@@ -5,18 +5,88 @@
     <title th:text="#{page.parser.title}">Parser</title>
     <link rel="stylesheet" th:href="@{/css/styles.css}">
     <link rel="icon" type="image/x-icon" th:href="@{/favicon.png}">
+    <style>
+        .buttonDelete{
+            background-color: #ff0000;
+            padding: 5px 10px;
+            margin: 0 auto;
+        }
+        .buttonDelete:active{
+            background-color: #a90000;
+        }
+        .buttonDelete:hover{
+            background-color: #ff8b8b;
+        }
+        .buttonTd{
+            display: flex;
+            justify-content: flex-start;
+        }
+        .buttonTd form {
+            margin: 0 5px;
+        }
+    </style>
 </head>
 <body>
 <div th:insert="~{fragments/navbar :: navbar}"></div>
 <div class="taskDetails">
+    <a th:href="@{/main/task/{tastId}(tastId=${link.task.id})}" style="text-decoration: none; color: #000;">
+        <span style="font-size: 1.5em; margin-right: 10px;">⬅️</span>
+    </a>
     <h3 th:text="#{page.task.details.linkName} + ' ' + ${link.name}"></h3>
     <p th:text="#{page.task.details.linkDescription} + ' ' + ${link.description}"></p>
     <h4 th:text="#{page.task.details.linkSelectors}"></h4>
-    <ul>
-        <li th:each="selector : ${link.selectors}">
-            <span th:text="${selector.name}"></span>: <span th:text="${selector.selector}"></span>
-        </li>
-    </ul>
+    <table id="taskTable">
+        <thead>
+        <tr>
+            <th>Название</th>
+            <th>Селектор</th>
+            <th>Действия</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="selector : ${link.selectors}">
+            <td th:text="${selector.name}"></td>
+            <td th:text="${selector.selector}"></td>
+            <td class="buttonTd">
+                <form th:action="@{/main/task-details-link/selector-delete}" method="post">
+                    <input type="hidden" name="linkId" th:value="${link.id}">
+                    <input type="hidden" name="selectorId" th:value="${selector.id}">
+                    <button type="submit" class="buttonDelete">Удалить</button>
+                </form>
+                <form th:action="@{/main/task-details-link/selector-scan}" method="post">
+                    <input type="hidden" name="linkId" th:value="${link.id}">
+                    <input type="hidden" name="selectorId" th:value="${selector.id}">
+                    <button type="submit" class="buttonDelete">Тест</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <br>
+    <br>
+    <form id="addSelectorForm" th:action="@{/main/task-details-link/{linkId}/selector-add(linkId=${link.id})}" method="post" style="display: none;">
+<!--        <input type="hidden" name="linkId" th:value="${link.id}">-->
+        <input type="text" name="name" th:placeholder="#{page.task.details.selectorName}" class="form-control" required>
+        <input type="text" name="selector" th:placeholder="#{page.task.details.selectorData}" class="form-control" required>
+        <button type="submit" class="btn btn-primary" th:text="#{page.task.add.button}"></button>
+    </form>
+
+    <button id="addButton" class="btn btn-primary" onclick="showForm()">Добавить</button>
+    <div th:if="${successMessage}" class="success-message">
+        <p th:text="${successMessage}"></p>
+    </div>
+    <div th:if="${errorMessage}" class="error-message">
+        <p th:text="${errorMessage}"></p>
+    </div>
 </div>
+
+<script>
+    function showForm() {
+        document.getElementById("addSelectorForm").style.display = "block";
+        document.getElementById("addButton").style.display = "none";
+        document.querySelector(".success-message").style.display = "none";
+        document.querySelector(".error-message").style.display = "none";
+    }
+</script>
 </body>
 </html>

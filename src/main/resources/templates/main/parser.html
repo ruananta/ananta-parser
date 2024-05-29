@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title th:text="#{page.parser.title}">Parser</title>
-    <link rel="stylesheet" th:href="@{../css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
     <link rel="icon" type="image/x-icon" th:href="@{/favicon.png}">
 </head>
 <body>
 <div th:insert="~{fragments/navbar :: navbar}"></div>
-<a class="addTaskButton" th:text="#{button.addTask}" th:href="@{/main/task-add}">Добавить задачу</a>
+<a class="addTaskButton" th:text="#{button.addTask}" th:href="@{/main/task/add}">Добавить задачу</a>
 <div class="tableContainer">
     <h2>Список задач</h2>
     <table id="taskTable">
@@ -54,7 +54,7 @@
     document.querySelectorAll('#taskTable tr').forEach(row => {
         row.addEventListener('click', () => {
             const taskId = row.getAttribute('data-task-id'); // Получение ID задачи
-            window.location.href = '/main/task-details/' + taskId; // Переход на другую страницу
+            window.location.href = '/main/task/' + taskId; // Переход на другую страницу
         });
     });
 </script>

@@ -9,6 +9,9 @@
 <body>
 <div th:insert="~{fragments/navbar :: navbar}"></div>
 <div class="taskDetails">
+    <a th:href="@{/main}" style="text-decoration: none; color: #000;">
+        <span style="font-size: 1.5em; margin-right: 10px;">⬅️</span>
+    </a>
     <h3 th:text="#{page.task.details.taskName} + ' ' + ${task.name}"></h3>
     <p th:text="#{page.task.details.taskDescription} + ' ' + ${task.description}"></p>
     <h4 th:text="#{page.task.details.linkTitle}"></h4>

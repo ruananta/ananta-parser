@@ -157,9 +157,18 @@ public class Task {
         private String name;
         private String selector;
         private Result result;
-
         @ManyToOne
         private Link link;
+
+        public Selector() {
+        }
+
+        public Selector(String name, String selector) {
+            this.name = name;
+            this.selector = selector;
+        }
+
+
 
         public String getName() {
             return name;
