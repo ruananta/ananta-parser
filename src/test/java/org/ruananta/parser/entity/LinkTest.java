@@ -2,21 +2,20 @@ package org.ruananta.parser.entity;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.ruananta.parser.engine.Task;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class LinkTest {
 
-    private Task.Link link;
-    private Task.Selector selector1;
-    private Task.Selector selector2;
+    private Link link;
+    private Selector selector1;
+    private Selector selector2;
 
     @BeforeEach
     public void setUp() {
-        link = new Task.Link();
-        selector1 = new Task.Selector();
-        selector2 = new Task.Selector();
+        link = new Link();
+        selector1 = new Selector();
+        selector2 = new Selector();
 
         selector1.setId(0L);
         selector2.setId(1L);

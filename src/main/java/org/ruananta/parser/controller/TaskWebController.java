@@ -1,7 +1,9 @@
 package org.ruananta.parser.controller;
 
-import org.ruananta.parser.engine.Task;
-import org.ruananta.parser.engine.TaskStatus;
+import org.ruananta.parser.entity.Link;
+import org.ruananta.parser.entity.Selector;
+import org.ruananta.parser.entity.Task;
+import org.ruananta.parser.config.TaskStatus;
 import org.ruananta.parser.repository.LinkRepository;
 import org.ruananta.parser.repository.SelectorRepository;
 import org.ruananta.parser.repository.TaskRepository;
@@ -94,7 +96,7 @@ public class TaskWebController {
     }
 
     @PostMapping("task/{taskId}/link/add")
-    public String addLink(@PathVariable Long taskId, @ModelAttribute Task.Link link,
+    public String addLink(@PathVariable Long taskId, @ModelAttribute Link link,
                           @AuthenticationPrincipal UserDetails currentUser, Model model) {
         Optional<Task> taskOptional = this.taskRepository.findById(taskId);
         if (taskOptional.isEmpty()) {
@@ -121,12 +123,12 @@ public class TaskWebController {
         if (taskOptional.isEmpty()) {
             return "404";
         }
-        Optional<Task.Link> linkOptional = this.linkRepository.findById(linkId);
+        Optional<Link> linkOptional = this.linkRepository.findById(linkId);
         if(linkOptional.isEmpty()){
             return "404";
         }
         Task task = taskOptional.get();
-        Task.Link link = linkOptional.get();
+        Link link = linkOptional.get();
         task.getLinks().remove(link);
         this.taskRepository.save(task);
         model.addAttribute("task", task);
@@ -145,7 +147,7 @@ public class TaskWebController {
             String username = currentUser.getUsername();
             model.addAttribute("username", username);
         }
-        Optional<Task.Link> link = this.linkRepository.findById(linkId);
+        Optional<Link> link = this.linkRepository.findById(linkId);
         if (link.isEmpty()) {
             return "404";
         }
@@ -155,13 +157,13 @@ public class TaskWebController {
 
     //todo add notNull check
     @PostMapping("link/{linkId}/selector/add")
-    public String addSelector(@PathVariable Long linkId, @ModelAttribute Task.Selector selector,
+    public String addSelector(@PathVariable Long linkId, @ModelAttribute Selector selector,
                               @AuthenticationPrincipal UserDetails currentUser, Model model) {
-        Optional<Task.Link> linkOptional = this.linkRepository.findById(linkId);
+        Optional<Link> linkOptional = this.linkRepository.findById(linkId);
         if (linkOptional.isEmpty()) {
             return "404";
         }
-        Task.Link link = linkOptional.get();
+        Link link = linkOptional.get();
 //        Task.Selector selector = new Task.Selector(name, stringSelector);
         selector.setLink(link);
         link.getSelectors().add(selector);
@@ -181,13 +183,13 @@ public class TaskWebController {
     @PostMapping("link/{linkId}/selector/remove")
     public String removeSelector(@PathVariable Long linkId, @RequestParam Long selectorId,
                                  @AuthenticationPrincipal UserDetails currentUser, Model model) {
-        Optional<Task.Link> linkOptional = this.linkRepository.findById(linkId);
+        Optional<Link> linkOptional = this.linkRepository.findById(linkId);
         if(linkOptional.isEmpty()){
             return "404";
         }
-        Optional<Task.Selector> selectorOptional = this.selectorRepository.findById(selectorId);
+        Optional<Selector> selectorOptional = this.selectorRepository.findById(selectorId);
 
-        Task.Link link = linkOptional.get();
+        Link link = linkOptional.get();
         if (selectorOptional.isPresent()) {
             link.getSelectors().remove(selectorOptional.get());
             this.linkRepository.save(link);
