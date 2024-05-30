@@ -68,14 +68,17 @@ body {
 .container {
     max-width: 600px;
 }
+
 .tableContainer {
     max-width: 900px;
 }
+
 .taskDetails {
     max-width: 900px;
     text-align: left;
 }
-.taskDetails p{
+
+.taskDetails p {
 
 }
 
@@ -228,6 +231,30 @@ button.btn-primary:hover {
 
 ul li::before {
     margin-right: 0.5em;
+}
+
+.buttonDelete {
+    background-color: #ff6918;
+    padding: 5px 10px;
+    margin: 0 auto;
+    border-radius: 5px;
+}
+
+.buttonDelete:active {
+    background-color: #c64200;
+}
+
+.buttonDelete:hover {
+    background-color: #b24301;
+}
+
+.buttonTd {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.buttonTd form {
+    margin: 0 5px;
 }
 
 

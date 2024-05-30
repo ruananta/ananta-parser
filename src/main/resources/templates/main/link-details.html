@@ -5,26 +5,6 @@
     <title th:text="#{page.parser.title}">Parser</title>
     <link rel="stylesheet" th:href="@{/css/styles.css}">
     <link rel="icon" type="image/x-icon" th:href="@{/favicon.png}">
-    <style>
-        .buttonDelete{
-            background-color: #ff0000;
-            padding: 5px 10px;
-            margin: 0 auto;
-        }
-        .buttonDelete:active{
-            background-color: #a90000;
-        }
-        .buttonDelete:hover{
-            background-color: #ff8b8b;
-        }
-        .buttonTd{
-            display: flex;
-            justify-content: flex-start;
-        }
-        .buttonTd form {
-            margin: 0 5px;
-        }
-    </style>
 </head>
 <body>
 <div th:insert="~{fragments/navbar :: navbar}"></div>
@@ -34,6 +14,8 @@
     </a>
     <h3 th:text="#{page.task.details.linkName} + ' ' + ${link.name}"></h3>
     <p th:text="#{page.task.details.linkDescription} + ' ' + ${link.description}"></p>
+    <span th:text="#{page.task.details.linkUrl} + ' '"/>
+    <a  th:text="${link.url}" th:href="${link.url}"/>
     <h4 th:text="#{page.task.details.linkSelectors}"></h4>
     <table id="taskTable">
         <thead>
@@ -60,15 +42,14 @@
         </tr>
         </tbody>
     </table>
-    <br>
-    <br>
+    <br><br>
     <form id="addSelectorForm" th:action="@{/main/link/{linkId}/selector/add(linkId=${link.id})}" method="post" style="display: none;">
         <input type="text" name="name" th:placeholder="#{page.task.details.selectorName}" class="form-control" required>
         <input type="text" name="selector" th:placeholder="#{page.task.details.selectorData}" class="form-control" required>
         <button type="submit" class="btn btn-primary" th:text="#{page.task.add.button}"></button>
     </form>
 
-    <button id="addButton" class="btn btn-primary" onclick="showForm()">Добавить</button>
+    <button id="addButton" class="btn btn-primary" onclick="showForm()" th:text="#{page.task.add.button}"/>
     <div th:if="${successMessage}" class="success-message">
         <p th:text="${successMessage}"></p>
     </div>

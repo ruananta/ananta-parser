@@ -119,6 +119,7 @@ public class WebController {
         return "redirect:/main";
     }
 
+
     @GetMapping("main/task/{taskId}")
     public String details(Model model, @AuthenticationPrincipal UserDetails currentUser, @PathVariable Long taskId) {
         if (!model.containsAttribute("username")) {
@@ -132,6 +133,52 @@ public class WebController {
         model.addAttribute("task", task.get());
         return "main/task-details";
     }
+
+    @PostMapping("main/task/{taskId}/link/add")
+    public String addLink(@PathVariable Long taskId, @ModelAttribute Task.Link link,
+                              @AuthenticationPrincipal UserDetails currentUser, Model model) {
+        Optional<Task> taskOptional = this.taskRepository.findById(taskId);
+        if (taskOptional.isEmpty()) {
+            return "404";
+        }
+        Task task = taskOptional.get();
+        link.setTask(task);
+        task.getLinks().add(link);
+        this.taskRepository.save(task);
+
+        model.addAttribute("task", task);
+        if (!model.containsAttribute("username")) {
+            String username = currentUser.getUsername();
+            model.addAttribute("username", username);
+        }
+        model.addAttribute("successMessage", "Успешно добавлено");
+        return "main/task-details";
+    }
+
+    @PostMapping("main/task/{taskId}/link/remove")
+    public String removeLink(@PathVariable Long taskId,  @RequestParam Long linkId,
+                             @AuthenticationPrincipal UserDetails currentUser, Model model) {
+        Optional<Task> taskOptional = this.taskRepository.findById(taskId);
+        if (taskOptional.isEmpty()) {
+            return "404";
+        }
+        Optional<Task.Link> linkOptional = this.linkRepository.findById(linkId);
+        if(linkOptional.isEmpty()){
+            return "404";
+        }
+        Task task = taskOptional.get();
+        Task.Link link = linkOptional.get();
+        task.getLinks().remove(link);
+        this.taskRepository.save(task);
+        model.addAttribute("task", task);
+        if (!model.containsAttribute("username")) {
+            String username = currentUser.getUsername();
+            model.addAttribute("username", username);
+        }
+        model.addAttribute("successMessage", "Успешно удалено");
+        return "main/task-details";
+    }
+
 
     @GetMapping("main/link/{linkId}")
     public String linkDetails(Model model, @AuthenticationPrincipal UserDetails currentUser, @PathVariable Long linkId) {
