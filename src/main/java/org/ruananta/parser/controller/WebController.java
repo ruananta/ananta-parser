@@ -29,7 +29,6 @@ import java.util.regex.Pattern;
 public class WebController {
     private MessageSource messageSource;
     private UserService userService;
-    private TaskService taskService;
     private TaskRepository taskRepository;
     private LinkRepository linkRepository;
     private SelectorRepository selectorRepository;
@@ -42,11 +41,6 @@ public class WebController {
     @Autowired
     public void setUserService(UserService userService) {
         this.userService = userService;
-    }
-
-    @Autowired
-    public void setTaskService(TaskService taskService) {
-        this.taskService = taskService;
     }
 
     @Autowired
@@ -131,11 +125,11 @@ public class WebController {
             String username = currentUser.getUsername();
             model.addAttribute("username", username);
         }
-        Task task = this.taskRepository.findTaskById(taskId);
-        if (task == null) {
+        Optional<Task> task = this.taskRepository.findById(taskId);
+        if (task.isEmpty()) {
             return "404";
         }
-        model.addAttribute("task", task);
+        model.addAttribute("task", task.get());
         return "main/task-details";
     }
 
@@ -145,19 +139,23 @@ public class WebController {
             String username = currentUser.getUsername();
             model.addAttribute("username", username);
         }
-        Task.Link link = this.linkRepository.findLinkById(linkId);
-        if (link == null) {
+        Optional<Task.Link> link = this.linkRepository.findById(linkId);
+        if (link.isEmpty()) {
             return "404";
         }
-        model.addAttribute("link", link);
+        model.addAttribute("link", link.get());
         return "main/link-details";
     }
 
-    //todo add notNull check, notNull linkById
+    //todo add notNull check
     @PostMapping("main/link/{linkId}/selector/add")
     public String addSelector(@PathVariable Long linkId, @ModelAttribute Task.Selector selector,
                               @AuthenticationPrincipal UserDetails currentUser, Model model) {
-        Task.Link link = this.linkRepository.findLinkById(linkId);
+        Optional<Task.Link> linkOptional = this.linkRepository.findById(linkId);
+        if (linkOptional.isEmpty()) {
+            return "404";
+        }
+        Task.Link link = linkOptional.get();
         selector.setLink(link);
         link.getSelectors().add(selector);
         this.linkRepository.save(link);
@@ -176,15 +174,20 @@ public class WebController {
     @PostMapping("main/link/{linkId}/selector/remove")
     public String removeSelector(@PathVariable Long linkId, @RequestParam Long selectorId,
                                  @AuthenticationPrincipal UserDetails currentUser, Model model) {
+        Optional<Task.Link> linkOptional = this.linkRepository.findById(linkId);
+        if(linkOptional.isEmpty()){
+            return "404";
+        }
+        Optional<Task.Selector> selectorOptional = this.selectorRepository.findById(selectorId);
+
+        Task.Link link = linkOptional.get();
+        if (selectorOptional.isPresent()) {
+            link.getSelectors().remove(selectorOptional.get());
+            this.linkRepository.save(link);
+        }
         if (!model.containsAttribute("username")) {
             String username = currentUser.getUsername();
             model.addAttribute("username", username);
-        }
-        Task.Link link = this.linkRepository.findLinkById(linkId);
-        Task.Selector selector = this.selectorRepository.findSelectorById(selectorId);
-        if (link != null && selector != null) {
-            link.getSelectors().remove(selector);
-            this.linkRepository.save(link);
         }
         model.addAttribute("link", link);
         model.addAttribute("successMessage", "Успешно удалено");

@@ -6,6 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface LinkRepository extends JpaRepository<Task.Link, Long> {
-    
-    public Task.Link findLinkById(Long linkId);
+
 }
