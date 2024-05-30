@@ -48,13 +48,11 @@
             <td th:text="${selector.name}"></td>
             <td th:text="${selector.selector}"></td>
             <td class="buttonTd">
-                <form th:action="@{/main/task-details-link/selector-delete}" method="post">
-                    <input type="hidden" name="linkId" th:value="${link.id}">
+                <form th:action="@{/main/link/{linkId}/selector/remove(linkId=${link.id})}" method="post">
                     <input type="hidden" name="selectorId" th:value="${selector.id}">
                     <button type="submit" class="buttonDelete">Удалить</button>
                 </form>
-                <form th:action="@{/main/task-details-link/selector-scan}" method="post">
-                    <input type="hidden" name="linkId" th:value="${link.id}">
+                <form th:action="@{/main/link/{linkId}/selector/scan(linkId=${link.id})}" method="post">
                     <input type="hidden" name="selectorId" th:value="${selector.id}">
                     <button type="submit" class="buttonDelete">Тест</button>
                 </form>
@@ -64,8 +62,7 @@
     </table>
     <br>
     <br>
-    <form id="addSelectorForm" th:action="@{/main/task-details-link/{linkId}/selector-add(linkId=${link.id})}" method="post" style="display: none;">
-<!--        <input type="hidden" name="linkId" th:value="${link.id}">-->
+    <form id="addSelectorForm" th:action="@{/main/link/{linkId}/selector/add(linkId=${link.id})}" method="post" style="display: none;">
         <input type="text" name="name" th:placeholder="#{page.task.details.selectorName}" class="form-control" required>
         <input type="text" name="selector" th:placeholder="#{page.task.details.selectorData}" class="form-control" required>
         <button type="submit" class="btn btn-primary" th:text="#{page.task.add.button}"></button>

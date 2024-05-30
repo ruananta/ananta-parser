@@ -33,26 +33,32 @@ public class WebController {
     private TaskRepository taskRepository;
     private LinkRepository linkRepository;
     private SelectorRepository selectorRepository;
+
     @Autowired
     public void setMessageSource(MessageSource messageSource) {
         this.messageSource = messageSource;
     }
+
     @Autowired
     public void setUserService(UserService userService) {
         this.userService = userService;
     }
+
     @Autowired
     public void setTaskService(TaskService taskService) {
         this.taskService = taskService;
     }
+
     @Autowired
     public void setTaskRepository(TaskRepository taskRepository) {
         this.taskRepository = taskRepository;
     }
+
     @Autowired
     public void setLinkRepository(LinkRepository linkRepository) {
         this.linkRepository = linkRepository;
     }
+
     @Autowired
     public void setSelectorRepository(SelectorRepository selectorRepository) {
         this.selectorRepository = selectorRepository;
@@ -96,7 +102,7 @@ public class WebController {
 
     @GetMapping("main/task/add")
     public String addTask(@AuthenticationPrincipal UserDetails currentUser, Model model) {
-        if(!model.containsAttribute("username")) {
+        if (!model.containsAttribute("username")) {
             String username = currentUser.getUsername();
             model.addAttribute("username", username);
         }
@@ -106,7 +112,7 @@ public class WebController {
     @PostMapping("main/task/add")
     public String addTask(Model model, @AuthenticationPrincipal UserDetails currentUser, @RequestParam String taskName, @RequestParam String description,
                           @RequestParam String links, @RequestParam String tags) {
-        if(!model.containsAttribute("username")) {
+        if (!model.containsAttribute("username")) {
             String username = currentUser.getUsername();
             model.addAttribute("username", username);
         }
@@ -121,67 +127,68 @@ public class WebController {
 
     @GetMapping("main/task/{taskId}")
     public String details(Model model, @AuthenticationPrincipal UserDetails currentUser, @PathVariable Long taskId) {
-        if(!model.containsAttribute("username")) {
+        if (!model.containsAttribute("username")) {
             String username = currentUser.getUsername();
             model.addAttribute("username", username);
         }
         Task task = this.taskRepository.findTaskById(taskId);
-        if(task == null) {
+        if (task == null) {
             return "404";
         }
         model.addAttribute("task", task);
         return "main/task-details";
     }
 
-    @GetMapping("main/task-details-link/{linkId}")
+    @GetMapping("main/link/{linkId}")
     public String linkDetails(Model model, @AuthenticationPrincipal UserDetails currentUser, @PathVariable Long linkId) {
-        if(!model.containsAttribute("username")) {
+        if (!model.containsAttribute("username")) {
             String username = currentUser.getUsername();
             model.addAttribute("username", username);
         }
         Task.Link link = this.linkRepository.findLinkById(linkId);
-        if(link == null) {
+        if (link == null) {
             return "404";
         }
         model.addAttribute("link", link);
-        return "main/task-details-link";
+        return "main/link-details";
     }
 
-//    @PostMapping("main/task-details-link/selector-add")
-//    public String addSelector(@RequestParam Long linkId, @RequestParam String name, @RequestParam String stringSelector,
-//                              @AuthenticationPrincipal UserDetails currentUser, Model model) {
-        @PostMapping("main/task-details-link/{linkId}/selector-add")
-        public String addSelector(@ModelAttribute Task.Selector selector, @PathVariable Long linkId,
+    //todo add notNull check, notNull linkById
+    @PostMapping("main/link/{linkId}/selector/add")
+    public String addSelector(@PathVariable Long linkId, @ModelAttribute Task.Selector selector,
                               @AuthenticationPrincipal UserDetails currentUser, Model model) {
         Task.Link link = this.linkRepository.findLinkById(linkId);
-//        Task.Selector selector = new Task.Selector();
-//        selector.setName(name);
-//        selector.setSelector(stringSelector);
         selector.setLink(link);
         link.getSelectors().add(selector);
         this.linkRepository.save(link);
 
         model.addAttribute("link", link);
 
-        if(!model.containsAttribute("username")) {
+        if (!model.containsAttribute("username")) {
             String username = currentUser.getUsername();
             model.addAttribute("username", username);
         }
         model.addAttribute("successMessage", "Успешно добавлено");
-        return "main/task-details-link";
+        return "main/link-details";
     }
-    @PostMapping("main/task-details-link/selector-delete")
-    public String deleteSelector(@RequestParam Long linkId, @RequestParam Long selectorId,
-                                 @AuthenticationPrincipal UserDetails currentUser, Model model){
+
+    //todo add notNull check, notNull linkById, selectorById
+    @PostMapping("main/link/{linkId}/selector/remove")
+    public String removeSelector(@PathVariable Long linkId, @RequestParam Long selectorId,
+                                 @AuthenticationPrincipal UserDetails currentUser, Model model) {
+        if (!model.containsAttribute("username")) {
+            String username = currentUser.getUsername();
+            model.addAttribute("username", username);
+        }
         Task.Link link = this.linkRepository.findLinkById(linkId);
         Task.Selector selector = this.selectorRepository.findSelectorById(selectorId);
-        if(link != null && selector != null) {
+        if (link != null && selector != null) {
             link.getSelectors().remove(selector);
             this.linkRepository.save(link);
         }
         model.addAttribute("link", link);
         model.addAttribute("successMessage", "Успешно удалено");
-        return "main/task-details-link";
+        return "main/link-details";
     }
 
     @PostMapping("/register")
@@ -240,6 +247,7 @@ public class WebController {
     public String notFound() {
         return "404";
     }
+
     @GetMapping("/403")
     public String forbidden() {
         return "403";

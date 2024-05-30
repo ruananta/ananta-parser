@@ -33,7 +33,7 @@
     document.querySelectorAll('#taskTable tr').forEach(row => {
         row.addEventListener('click', () => {
             const linkId = row.getAttribute('data-link-id'); // Получение ID задачи
-            window.location.href = '/main/task-details-link/' + linkId; // Переход на другую страницу
+            window.location.href = '/main/link/' + linkId; // Переход на другую страницу
         });
     });
 </script>
