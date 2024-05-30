@@ -2,8 +2,7 @@ package org.ruananta.parser.engine;
 
 import jakarta.persistence.*;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 public class Task {
@@ -76,7 +75,7 @@ public class Task {
         private String url;
 
         @OneToMany(mappedBy = "link", cascade = CascadeType.ALL, orphanRemoval = true)
-        private Set<Selector> selectors = new HashSet<>();
+        private Set<Selector> selectors = new TreeSet<>( new SelectorComparator());
 
         @ManyToOne
         @JoinColumn
@@ -119,7 +118,8 @@ public class Task {
         }
 
         public void setSelectors(Set<Selector> pathProperties) {
-            this.selectors = pathProperties;
+            this.selectors.clear();
+            this.selectors.addAll(pathProperties);
         }
 
         public void setTask(Task task) {
@@ -145,6 +145,27 @@ public class Task {
                 selector.setSelector(strings[1]);
             }else{
                 selector.setSelector(stringSelector);
+            }
+        }
+
+        public void moveUp(Selector selector){
+            if(this.selectors.contains(selector)){
+                Selector up = ((TreeSet<Selector>) this.selectors).lower(selector);
+                if(up != null){
+                    long temp = up.getId();
+                    up.setId(selector.getId());
+                    selector.setId(temp);
+                }
+            }
+        }
+        public void moveDown(Selector selector){
+            if(this.selectors.contains(selector)){
+                Selector down = ((TreeSet<Selector>) this.selectors).higher(selector);
+                if(down != null){
+                    long temp = down.getId();
+                    down.setId(selector.getId());
+                    selector.setId(temp);
+                }
             }
         }
     }
@@ -208,6 +229,26 @@ public class Task {
 
         public void setResult(Result results) {
             this.result = results;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(id);
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if(obj instanceof Selector s){
+                return this.id.equals(s.id);
+            }
+            return super.equals(obj);
+        }
+    }
+
+    public static class SelectorComparator implements Comparator<Selector> {
+        @Override
+        public int compare(Selector selector1, Selector selector2) {
+            return selector1.getId().compareTo(selector2.getId());
         }
     }
 
