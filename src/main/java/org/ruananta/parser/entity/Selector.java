@@ -6,7 +6,7 @@ import java.util.Comparator;
 import java.util.Objects;
 
 @Entity
-public class Selector {
+public class Selector implements Identifiable{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -24,6 +24,16 @@ public class Selector {
         this.path = path;
     }
 
+    @Override
+    public Long getId() {
+        return id;
+    }
+
+    @Override
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public String getName() {
         return name;
     }
@@ -38,14 +48,6 @@ public class Selector {
 
     public void setLink(Link link) {
         this.link = link;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getPath() {

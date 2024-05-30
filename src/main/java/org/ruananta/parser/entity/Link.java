@@ -2,11 +2,14 @@ package org.ruananta.parser.entity;
 
 import jakarta.persistence.*;
 
+import java.io.Serializable;
+import java.util.Comparator;
+import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 
 @Entity
-public class Link {
+public class Link implements Identifiable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -15,16 +18,18 @@ public class Link {
     private String url;
 
     @OneToMany(mappedBy = "link", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Selector> selectors = new TreeSet<>(new Selector.SelectorComparator());
+    private Set<Selector> selectors = new TreeSet<>(new IdentifiableComparator());
 
     @ManyToOne
     @JoinColumn
     private Task task;
 
+    @Override
     public Long getId() {
         return id;
     }
 
+    @Override
     public void setId(Long id) {
         this.id = id;
     }
@@ -89,25 +94,29 @@ public class Link {
         }
     }
 
+    public boolean canMoveUp(Selector selector) {
+        return ValueMover.canMoveUp(selector, (TreeSet<Selector>) this.selectors);
+    }
+    public boolean canMoveDown(Selector selector) {
+        return ValueMover.canMoveDown(selector, (TreeSet<Selector>) this.selectors);
+    }
     public void moveUp(Selector selector) {
-        if (this.selectors.contains(selector)) {
-            Selector up = ((TreeSet<Selector>) this.selectors).lower(selector);
-            if (up != null) {
-                long temp = up.getId();
-                up.setId(selector.getId());
-                selector.setId(temp);
-            }
-        }
+        ValueMover.moveUp(selector, (TreeSet<Selector>) this.selectors);
+    }
+    public void moveDown(Selector selector) {
+        ValueMover.moveDown(selector, (TreeSet<Selector>) this.selectors);
     }
 
-    public void moveDown(Selector selector) {
-        if (this.selectors.contains(selector)) {
-            Selector down = ((TreeSet<Selector>) this.selectors).higher(selector);
-            if (down != null) {
-                long temp = down.getId();
-                down.setId(selector.getId());
-                selector.setId(temp);
-            }
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.id);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Link link) {
+            return this.id.equals(link.id);
         }
+        return super.equals(obj);
     }
 }

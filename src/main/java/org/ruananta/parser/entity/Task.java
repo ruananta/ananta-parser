@@ -6,7 +6,7 @@ import org.ruananta.parser.config.TaskStatus;
 import java.util.*;
 
 @Entity
-public class Task {
+public class Task implements Identifiable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -15,10 +15,16 @@ public class Task {
     private TaskStatus status;
 
     @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Link> links = new HashSet<>();
+    private Set<Link> links = new TreeSet<>(new IdentifiableComparator());
 
+    @Override
     public Long getId() {
         return id;
+    }
+
+    @Override
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Set<Link> getLinks() {
@@ -64,6 +70,19 @@ public class Task {
             link.setTask(this);
             this.links.add(link);
         }
+    }
+
+    public boolean canMoveUp(Link link) {
+        return ValueMover.canMoveUp(link, (TreeSet<Link>) this.links);
+    }
+    public boolean canMoveDown(Link link) {
+        return ValueMover.canMoveDown(link, (TreeSet<Link>) this.links);
+    }
+    public void moveUp(Link link) {
+        ValueMover.moveUp(link, (TreeSet<Link>) this.links);
+    }
+    public void moveDown(Link link) {
+        ValueMover.moveDown(link, (TreeSet<Link>) this.links);
     }
 
 }
