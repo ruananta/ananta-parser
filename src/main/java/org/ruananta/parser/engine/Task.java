@@ -141,10 +141,10 @@ public class Task {
             this.selectors.add(selector);
             if(stringSelector.contains("->")){
                 String[] strings = stringSelector.split("\\-\\>");
-                selector.setSelector(strings[0]);
-                selector.setSelector(strings[1]);
+                selector.setPath(strings[0]);
+                selector.setPath(strings[1]);
             }else{
-                selector.setSelector(stringSelector);
+                selector.setPath(stringSelector);
             }
         }
 
@@ -176,7 +176,7 @@ public class Task {
         @GeneratedValue(strategy = GenerationType.AUTO)
         private Long id;
         private String name;
-        private String selector;
+        private String path;
         private Result result;
         @ManyToOne
         private Link link;
@@ -184,12 +184,10 @@ public class Task {
         public Selector() {
         }
 
-        public Selector(String name, String selector) {
+        public Selector(String name, String path) {
             this.name = name;
-            this.selector = selector;
+            this.path = path;
         }
-
-
 
         public String getName() {
             return name;
@@ -215,12 +213,12 @@ public class Task {
             this.id = id;
         }
 
-        public String getSelector() {
-            return selector;
+        public String getPath() {
+            return path;
         }
 
-        public void setSelector(String path) {
-            this.selector = path;
+        public void setPath(String path) {
+            this.path = path;
         }
 
         public Result getResult() {

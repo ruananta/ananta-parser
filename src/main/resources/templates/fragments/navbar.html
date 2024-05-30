@@ -14,7 +14,8 @@
                 <a th:if="${username == null}" class="nav-button" th:href="@{/register}" th:text="#{button.register}">Регистрация</a>
                 <!-- Если пользователь аутентифицирован -->
                 <span th:if="${username != null}" th:text="#{page.navbar.hello(${username})}">Здравствуйте, {username}!</span>
-                <a th:if="${username != null}" class="nav-button" th:href="@{/logout}" th:text="#{button.logout}">Выход</a>
+                <a th:if="${username != null}" class="nav-button" th:href="@{/main}" th:text="#{button.lk}"/>
+                <a th:if="${username != null}" class="nav-button" th:href="@{/logout}" th:text="#{button.logout}"/>
             </div>
         </div>
     </nav>
